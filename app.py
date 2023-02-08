@@ -5,6 +5,7 @@ import json
 import pandas as pd
 import numpy as np
 import os
+import subprocess
 data = gpd.read_file(r'Grunnkretser2020.shp')
 data = data.to_crs(epsg=4326)
 data['place']=0
@@ -197,78 +198,12 @@ def index():
         folium.GeoJson(data=datagk['geometry']).add_to(m)
         
     m.save('templates/map.html')
-    return render_template("index.html",map=m)
-
-# @app.route('/update_map', methods=['POST'])
-# def update_map():
-#     global first_time
-    
-#     #user_input = request.get_json()
-#     user_input = request.form['user_input']
-#     m = folium.Map(location=[59.95, 10.75], zoom_start=10.4)
-#     print(user_input)
-#     if len(user_input)==1:
-#         if 'Unemployed' in user_input:
-#             folium.Choropleth(
-#                 geo_data=datagk['geometry'],
-#                 name="choropleth",
-#                 data=datagk['emp'],
-#                 columns=["DBD", "emp"],
-#                 key_on="feature.id",
-#                 fill_color="Reds",
-#                 fill_opacity=0.6,
-#                 line_opacity=0.2,
-#                 legend_name="Unemployment Rate (%)").add_to(m)
-#         elif 'Percentage of persons with at most VGS' in user_input:
-#             folium.Choropleth(
-#                 geo_data=datagk['geometry'],
-#                 name="choropleth",
-#                 data=datagk['edu'],
-#                 columns=["DBD", "edu"],
-#                 key_on="feature.id",
-#                 fill_color="Reds",
-#                 fill_opacity=0.6,
-#                 line_opacity=0.2,
-#                 legend_name="Percentage low-education").add_to(m)
-#         elif 'Percentage registered disabled' in user_input:
-#             folium.Choropleth(
-#                 geo_data=datagk['geometry'],
-#                 name="choropleth",
-#                 data=datagk['dis'],
-#                 columns=["DBD", "dis"],
-#                 key_on="feature.id",
-#                 fill_color="Reds",
-#                 fill_opacity=0.6,
-#                 line_opacity=0.2,
-#                 legend_name="Percentage registered disabled").add_to(m)
-#     elif len(user_input)>1:
-#         print('Hello')
-#         labels = ['Unemployed','Percentage of persons with at most VGS','Percentage registered disabled','Percentage low income households']
-#         lab_idx = ['emp','edu','dis','inc']
-#         datagk['new'] = 0.0
-#         for i in range(len(labels)):
-#             if labels[i] in user_input:
-#                 datagk['new'] = datagk['new']+datagk[lab_idx[i]]
-#         datagk['new'] = datagk['new']/len(user_input)
-#         folium.Choropleth(
-#                 geo_data=datagk['geometry'],
-#                 name="choropleth",
-#                 data=datagk['new'],
-#                 columns=["DBD", "new"],
-#                 key_on="feature.id",
-#                 fill_color="Reds",
-#                 fill_opacity=0.6,
-#                 line_opacity=0.2,
-#                 legend_name="Composite score").add_to(m)
-    
-#     if first_time:
-#         first_time=False
-    
-#     m.save("templates/map.html")
-# #     response = make_response(m._repr_html_())
-# #     response.headers["Content-Type"] = "text/html"
-# #     return response
-#     return render_template("index.html",map=m)
+	subprocess.call(["git", "add", "templates/map.html"])
+	subprocess.call(["git","commit","-m","Update map.html"])
+	subprocess.call(["git","push","origin","master"])
+	map_url = "https://raw.githubusercontent.com/conorak/oslomap/master/templates/map.html"
+    return render_template("index.html",map=map_url)
+	#return render_template("index.html",map=m)
 
 if __name__ == '__main__':
     app.run()
