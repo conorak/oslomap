@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Choropleth Map</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id="map"></div>
+    {{map._repr_html_() | safe}}
+	<form method="post">
+      <input type="checkbox" name="user_input" value="Unemployed">Unemployed<br>
+      <input type="checkbox" name="user_input" value="Percentage of persons with at most VGS">Percentage of persons with at most VGS<br>
+	  <input type="checkbox" name="user_input" value="Percentage registered disabled">Percentage registered disabled<br>
+	  <input type="checkbox" name="user_input" value="Percentage low income households">Percentage low income households<br>
+      <input type="submit" value="Submit">
+    </form>
+  </body>
+  <script>
+    $(document).ready(function(){
+      $("input[type='checkbox']").click(function(){
+        var data = {};
+        $("input[type='checkbox']:checked").each(function(){
+          data[$(this).val()] = true;
+        });
+        $.ajax({
+          type: 'POST',
+          url: '/update_map',
+          data: JSON.stringify(data),
+          contentType: 'application/json;charset=UTF-8',
+          success: function(response) {
+			//$("#map").empty();
+			$("#map").html(response);
+			{{map._repr_html_() | safe}}
+          }
+        });
+      });
+    });
+  </script>
+</html>
