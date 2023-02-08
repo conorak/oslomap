@@ -199,10 +199,10 @@ def index():
         
     m.save('templates/map.html')
     subprocess.call(["git", "add", "templates/map.html"])
-	  subprocess.call(["git","commit","-m","Update map.html"])
-	  subprocess.call(["git","push","origin","master"])
-	  map_url = "https://raw.githubusercontent.com/conorak/oslomap/master/templates/map.html"
-	  return render_template("index.html",map=map_url)
+    subprocess.call(["git","commit","-m","Update map.html"])
+    subprocess.call(["git","push","origin","master"])
+    map_url = "https://raw.githubusercontent.com/conorak/oslomap/master/templates/map.html"
+    return render_template("index.html",map=map_url)
 	#return render_template("index.html",map=m)
 
 if __name__ == '__main__':
